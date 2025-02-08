@@ -1,13 +1,10 @@
 FROM maven as builder
-WORKDIR /app
+WORKDIR /
 COPY . .
 RUN mvn package
 
 FROM openjdk:25-oraclelinux9
-WORKDIR /app
+COPY --from=builder /target/app.jar /app.jar
 
-COPY --from=builder /app/pocjavalin.jar /app/pocjavalin.jar
-
-EXPOSE 7070
-
-ENTRYPOINT [ "java", "-jar", "pocjavalin.jar" ]
+EXPOSE 7000 
+ENTRYPOINT ["java", "-jar", "/app.jar"]
